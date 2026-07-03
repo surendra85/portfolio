@@ -4,11 +4,15 @@
   --text-soft: #75737d;
   --bg: #fafafa;
   --bg-alt: #ffffff;
+  --bg-raised: #ffffff;
   --border: #e5e4e7;
   --accent: #6d4de6;
+  --accent-2: #e6497a;
   --accent-bg: rgba(109, 77, 230, 0.08);
   --accent-border: rgba(109, 77, 230, 0.35);
-  --shadow: rgba(20, 19, 26, 0.06) 0 8px 24px -8px;
+  --shadow: rgba(20, 19, 26, 0.08) 0 8px 24px -8px;
+  --shadow-lg: rgba(20, 19, 26, 0.12) 0 20px 40px -12px;
+  --grid-line: rgba(20, 19, 26, 0.05);
 
   --sans: -apple-system, system-ui, 'Segoe UI', Roboto, sans-serif;
 
@@ -29,20 +33,63 @@
     --text-soft: #8b8994;
     --bg: #121218;
     --bg-alt: #191921;
+    --bg-raised: #1e1e28;
     --border: #2c2b35;
     --accent: #a78bfa;
+    --accent-2: #ec6f9b;
     --accent-bg: rgba(167, 139, 250, 0.12);
     --accent-border: rgba(167, 139, 250, 0.4);
     --shadow: rgba(0, 0, 0, 0.4) 0 8px 24px -8px;
+    --shadow-lg: rgba(0, 0, 0, 0.5) 0 20px 40px -12px;
+    --grid-line: rgba(255, 255, 255, 0.05);
   }
+}
+
+:root[data-theme='light'] {
+  --text: #4b4a52;
+  --text-h: #14131a;
+  --text-soft: #75737d;
+  --bg: #fafafa;
+  --bg-alt: #ffffff;
+  --bg-raised: #ffffff;
+  --border: #e5e4e7;
+  --accent: #6d4de6;
+  --accent-2: #e6497a;
+  --accent-bg: rgba(109, 77, 230, 0.08);
+  --accent-border: rgba(109, 77, 230, 0.35);
+  --shadow: rgba(20, 19, 26, 0.08) 0 8px 24px -8px;
+  --shadow-lg: rgba(20, 19, 26, 0.12) 0 20px 40px -12px;
+  --grid-line: rgba(20, 19, 26, 0.05);
+}
+
+:root[data-theme='dark'] {
+  --text: #b6b4bd;
+  --text-h: #f3f2f6;
+  --text-soft: #8b8994;
+  --bg: #121218;
+  --bg-alt: #191921;
+  --bg-raised: #1e1e28;
+  --border: #2c2b35;
+  --accent: #a78bfa;
+  --accent-2: #ec6f9b;
+  --accent-bg: rgba(167, 139, 250, 0.12);
+  --accent-border: rgba(167, 139, 250, 0.4);
+  --shadow: rgba(0, 0, 0, 0.4) 0 8px 24px -8px;
+  --shadow-lg: rgba(0, 0, 0, 0.5) 0 20px 40px -12px;
+  --grid-line: rgba(255, 255, 255, 0.05);
 }
 
 * {
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
 h1, h2, h3 {
@@ -68,4 +115,15 @@ ul {
 
 li {
   margin-bottom: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

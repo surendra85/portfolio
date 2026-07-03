@@ -24,6 +24,13 @@ export const skills = [
   'AWS',
 ]
 
+export const skillGroups = [
+  { category: 'Banking Platforms', items: ['Temenos Quantum', 'Temenos Digital'] },
+  { category: 'Frontend', items: ['JavaScript', 'ReactJs', 'AngularJS', 'HTML', 'CSS'] },
+  { category: 'Backend', items: ['Java', 'Spring', 'Hibernate'] },
+  { category: 'Data & Cloud', items: ['MySQL', 'AWS'] },
+]
+
 export const experience = [
   {
     role: 'Lead Architect',
