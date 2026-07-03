@@ -1,0 +1,14 @@
+name = "ask-about-surendra"
+main = "src/index.js"
+compatibility_date = "2026-01-01"
+
+[vars]
+AI_PROVIDER = "anthropic"
+ANTHROPIC_MODEL = "claude-haiku-4-5"
+ALLOWED_ORIGINS = "https://surendra85.github.io"
+
+# Created via: wrangler kv namespace create RATE_LIMIT_KV
+# Then paste the returned id below.
+[[kv_namespaces]]
+binding = "RATE_LIMIT_KV"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
