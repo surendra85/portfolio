@@ -7,7 +7,6 @@ import Experience from './components/Experience'
 import Education from './components/Education'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
-import AskAboutMe from './components/AskAboutMe'
 import './App.css'
 
 function App() {
@@ -24,7 +23,6 @@ function App() {
         <Contact />
       </main>
       <Footer />
-      <AskAboutMe />
     </>
   )
 }
