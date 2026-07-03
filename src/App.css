@@ -733,6 +733,15 @@ main {
   border-radius: 10px;
 }
 
+.ask-notice {
+  align-self: flex-start;
+  font-size: 13px;
+  color: var(--text-soft);
+  background: var(--border);
+  padding: 8px 12px;
+  border-radius: 10px;
+}
+
 .ask-input-row {
   display: flex;
   gap: 8px;

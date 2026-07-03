@@ -159,6 +159,12 @@ async function callGemini(env, question) {
   return { text, tokens }
 }
 
+function requiredKeyFor(provider) {
+  if (provider === 'openai') return 'OPENAI_API_KEY'
+  if (provider === 'gemini') return 'GEMINI_API_KEY'
+  return 'ANTHROPIC_API_KEY'
+}
+
 async function callProvider(env, question) {
   const provider = (env.AI_PROVIDER || 'anthropic').toLowerCase()
   if (provider === 'openai') return callOpenAI(env, question)
@@ -201,12 +207,24 @@ export default {
       })
     }
 
+    const provider = (env.AI_PROVIDER || 'anthropic').toLowerCase()
+    const requiredKey = requiredKeyFor(provider)
+    if (!env[requiredKey]) {
+      return new Response(
+        JSON.stringify({
+          error: `This feature isn't finished setting up yet — the server is missing ${requiredKey}. Ask the site owner to run "wrangler secret put ${requiredKey}".`,
+          reason: 'not_configured',
+        }),
+        { status: 500, headers: { ...headers, 'content-type': 'application/json' } },
+      )
+    }
+
     const ip = request.headers.get('CF-Connecting-IP') || 'unknown'
     const kv = env.RATE_LIMIT_KV
 
     const rate = await checkAndIncrementRateLimit(kv, ip)
     if (!rate.allowed) {
-      return new Response(JSON.stringify({ error: rate.reason }), {
+      return new Response(JSON.stringify({ error: rate.reason, reason: 'rate_limited' }), {
         status: 429,
         headers: { ...headers, 'content-type': 'application/json' },
       })
@@ -215,7 +233,10 @@ export default {
     const budget = await checkGlobalBudget(kv)
     if (budget.remaining <= 0) {
       return new Response(
-        JSON.stringify({ error: "This feature has hit its daily usage cap. Please try again tomorrow." }),
+        JSON.stringify({
+          error: "This feature has hit its daily usage cap. Please try again tomorrow.",
+          reason: 'budget_exceeded',
+        }),
         { status: 429, headers: { ...headers, 'content-type': 'application/json' } },
       )
     }
@@ -227,10 +248,13 @@ export default {
         headers: { ...headers, 'content-type': 'application/json' },
       })
     } catch (err) {
-      return new Response(JSON.stringify({ error: 'Something went wrong answering that. Please try again.' }), {
-        status: 502,
-        headers: { ...headers, 'content-type': 'application/json' },
-      })
+      return new Response(
+        JSON.stringify({
+          error: 'The AI provider could not answer that just now. Please try again in a moment.',
+          reason: 'provider_error',
+        }),
+        { status: 502, headers: { ...headers, 'content-type': 'application/json' } },
+      )
     }
   },
 }

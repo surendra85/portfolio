@@ -30,7 +30,10 @@ export default function AskAboutMe() {
     setLoading(true)
 
     if (!API_URL) {
-      setError('This feature is not configured yet — set VITE_ASK_API_URL to your deployed worker URL.')
+      setError({
+        reason: 'client_not_configured',
+        message: 'This feature isn’t connected yet — the site owner still needs to deploy the backend and set VITE_ASK_API_URL.',
+      })
       setLoading(false)
       return
     }
@@ -41,15 +44,26 @@ export default function AskAboutMe() {
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ question }),
       })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Something went wrong')
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) {
+        throw Object.assign(new Error(data.error || `Request failed (${res.status})`), {
+          reason: data.reason || 'unknown_error',
+        })
+      }
       setMessages((m) => [...m, { role: 'assistant', text: data.answer }])
     } catch (err) {
-      setError(err.message)
+      setError({
+        reason: err.reason || 'network_error',
+        message: err.reason
+          ? err.message
+          : 'Could not reach the assistant — check your connection and try again.',
+      })
     } finally {
       setLoading(false)
     }
   }
+
+  const isInfoTone = error?.reason === 'rate_limited' || error?.reason === 'budget_exceeded'
 
   return (
     <>
@@ -102,7 +116,9 @@ export default function AskAboutMe() {
                   <Loader2 size={14} className="ask-spinner" /> Thinking…
                 </div>
               )}
-              {error && <div className="ask-error">{error}</div>}
+              {error && (
+                <div className={isInfoTone ? 'ask-notice' : 'ask-error'}>{error.message}</div>
+              )}
             </div>
 
             <form
